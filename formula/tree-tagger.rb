@@ -119,7 +119,7 @@ class TreeTagger < Formula
   end
 
   
-  def caveats; <<-EOS.undent
+  def caveats; <<-~EOS
      You may want to add to your path 
       #{libexec}/bin 
       and 
