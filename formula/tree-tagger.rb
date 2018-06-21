@@ -3,8 +3,8 @@ require "formula"
 class TreeTagger < Formula
 
   homepage "http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/"
-  url "http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-MacOSX-3.2-intel.tar.gz"
-  sha1 "d823320b718eb41a5b4fef449a711307caaf0d88"
+  url "http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/data/tree-tagger-MacOSX-3.2.tar.gz"
+  sha256 "49664b53e6478ef9db3a36fbc06fc83dcea60409064fefe92e107612753590a9"
   version "3.2"
 
   option "without-english"         , "Do not install English parameter files."
@@ -99,10 +99,15 @@ class TreeTagger < Formula
     system "./install-tagger.sh"
 
     Dir["cmd/*"].each do |cmd_file|
-      inreplace cmd_file do |cmd_text|
-        cmd_text.gsub!(/BIN=.*/, "BIN=#{libexec}/bin")
-        cmd_text.gsub!(/CMD=.*/, "CMD=#{libexec}/cmd")
-        cmd_text.gsub!(/LIB=.*/, "LIB=#{libexec}/lib")
+      begin
+        inreplace cmd_file do |cmd_text|
+          cmd_text.gsub!(/BIN=.*/, "BIN=#{libexec}/bin")
+          cmd_text.gsub!(/CMD=.*/, "CMD=#{libexec}/cmd")
+          cmd_text.gsub!(/LIB=.*/, "LIB=#{libexec}/lib")
+        end
+        rescue
+          #uncoment to enable verbose mode:
+          #puts "Warning: lines to replace not found in #{cmd_file}"
       end
     end
 
@@ -113,6 +118,16 @@ class TreeTagger < Formula
     bin.install_symlink Dir["#{libexec}/cmd/*"]
   end
 
+  
+  def caveats; <<-EOS.undent
+     You may want to add to your path 
+      #{libexec}/bin 
+      and 
+      #{libexec}/cmd.
+     EOS
+  end
+  
+  
   test do
     system "false"
   end
